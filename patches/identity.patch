@@ -1,0 +1,13 @@
+diff --git a/src/rdf/identity.js b/src/rdf/identity.js
+index aebdff6..aa5a7cd 100644
+--- a/src/rdf/identity.js
++++ b/src/rdf/identity.js
+@@ -16,7 +16,7 @@
+ // Turn on JavaScriptLint variable declaration checking
+ 
+ if (typeof process === 'object' && process + '' === '[object process]'){
+-  this.$rdf = require('./init');
++  var $rdf = require('./init');
+ }
+ 
+ $rdf.IndexedFormula = function () {

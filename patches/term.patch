@@ -1,0 +1,13 @@
+diff --git a/src/rdf/term.js b/src/rdf/term.js
+index 0068ea7..b66a2b2 100644
+--- a/src/rdf/term.js
++++ b/src/rdf/term.js
+@@ -12,7 +12,7 @@
+ (function() {
+ 
+ if (typeof process === 'object' && process + '' === '[object process]'){
+-  this.$rdf = require('./init');
++  var $rdf = require('./init');
+ }
+ 
+ var Term = {};

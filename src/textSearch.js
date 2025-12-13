@@ -4,6 +4,7 @@
     Copyright © 2018 Center for History and New Media
                      George Mason University, Fairfax, Virginia, USA
                      https://www.zotero.org
+	Copyright © 2025 V2lsbGlhbVpoYW5n
     
     This file is part of Zotero.
     
@@ -26,8 +27,19 @@
 const config = require('config');
 const XRegExp = require('xregexp');
 const md5 = require('md5');
-const AWS = require('aws-sdk');
-const Lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+
+// AWS Lambda support - only initialize if AWS SDK is available and in Lambda environment
+let Lambda;
+try {
+	const AWS = require('aws-sdk');
+	// Only create Lambda client if we're actually configured to use it
+	if (config.has('identifierSearchLambda') && config.get('identifierSearchLambda')) {
+		Lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+	}
+} catch (e) {
+	// AWS SDK not available, Lambda-based text search will be disabled
+	Zotero.debug('AWS SDK not available - identifier search via Lambda will be disabled', 1);
+}
 
 module.exports = {
 	/**
@@ -110,6 +122,12 @@ module.exports = {
 	
 	// Expose for stubbing in tests
 	queryLambda: async function (query) {
+		// If Lambda is not available, return empty results
+		if (!Lambda) {
+			Zotero.debug('Lambda not configured or AWS SDK not available', 1);
+			return [];
+		}
+
 		let params = {
 			FunctionName: config.get('identifierSearchLambda'),
 			InvocationType: 'RequestResponse',
@@ -121,7 +139,7 @@ module.exports = {
 		if (result.FunctionError) {
 			throw new Error('Lambda error: ' + result.Payload);
 		}
-		
+
 		identifiers = JSON.parse(result.Payload);
 		return identifiers;
 	}

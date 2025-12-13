@@ -4,3 +4,5 @@ config/dev.json
 config/local.json
 lambda_config*.env
 
+.vercel
+.env*.local

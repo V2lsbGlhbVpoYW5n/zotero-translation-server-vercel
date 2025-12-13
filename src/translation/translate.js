@@ -24,10 +24,11 @@
 */
 
 Zotero.Translate = Zotero.requireTranslate('./translation/translate');
+// Load translate_item from the submodule to attach ItemSaver and ItemGetter to Zotero.Translate
+Zotero.requireTranslate('./translation/translate_item');
 
 Zotero.Translate = {...Zotero.Translate,
 	SandboxManager: require('./sandboxManager'),
-	...require('./translate_item')
 };
 Zotero.Translate.ItemSaver.prototype.saveItems = async function (jsonItems, attachmentCallback, itemsDoneCallback) {
 	this.items = (this.items || []).concat(jsonItems)

@@ -1,7 +1,7 @@
 const config = require('config');
 
 module.exports = async (ctx, next) => {
-	headersSet = {};
+	let headersSet = {};
 	function set(key, value) {
 		ctx.set(key, value);
 		headersSet[key] = value;

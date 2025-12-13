@@ -1,0 +1,35 @@
+.git
+.gitignore
+.gitmodules
+
+# Tests
+test/
+
+# Node modules and lockfiles
+node_modules
+package-lock.json
+
+# AWS Lambda files / packaging
+lambda_*
+lambda_*
+lambda_package
+lambda_deploy
+lambda_local_test
+lambda_config.env-sample
+lambda_local_test_event.json
+
+# Docker files
+Dockerfile
+docker-entrypoint.sh
+.dockerignore
+
+# Misc
+COPYING
+*.log
+
+# Examples and env files
+.env*
+
+# Build / artifacts
+dist/
+build/
