@@ -7,6 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PATCHES_DIR="$SCRIPT_DIR/patches"
 TRANSLATE_DIR="$SCRIPT_DIR/modules/translate"
+TRANSLATORS_DIR="$SCRIPT_DIR/modules/translators"
 
 echo "Applying patches to translate submodule..."
 
@@ -16,15 +17,22 @@ if [ ! -d "$PATCHES_DIR" ]; then
     exit 0
 fi
 
-# Apply each patch
-for patch in "$PATCHES_DIR"/*.patch; do
-    if [ -f "$patch" ]; then
-        echo "Applying $(basename "$patch")..."
-        cd "$TRANSLATE_DIR"
-        # Use --forward to skip patches that are already applied
-        # Use --reject to create .rej files for failed hunks instead of failing
-        git apply --check "$patch" 2>/dev/null && git apply "$patch" || echo "Patch $(basename "$patch") already applied or failed"
-    fi
-done
+cd "$TRANSLATE_DIR"
+# Apply identity patch, term patch
+if [ -f "$PATCHES_DIR/identity.patch" ]; then
+    echo "Applying identity patch..."
+    git apply --check "$PATCHES_DIR/identity.patch" 2>/dev/null && git apply "$PATCHES_DIR/identity.patch" || echo "Identity term fix patch already applied or failed"
+fi
+if [ -f "$PATCHES_DIR/term.patch" ]; then
+    echo "Applying term patch..."
+    git apply --check "$PATCHES_DIR/term.patch" 2>/dev/null && git apply "$PATCHES_DIR/term.patch" || echo "Term patch already applied or failed"
+fi
+
+cd "$TRANSLATORS_DIR"
+# Apply doi date format patch
+if [ -f "$PATCHES_DIR/doi-date-format.patch" ]; then
+    echo "Applying DOI date format patch..."
+    git apply --check "$PATCHES_DIR/doi-date-format.patch" 2>/dev/null && git apply "$PATCHES_DIR/doi-date-format.patch" || echo "DOI date format patch already applied or failed"
+fi
 
 echo "Patches applied successfully!"
